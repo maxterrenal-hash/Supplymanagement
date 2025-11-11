@@ -1,1 +1,1083 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Supply Charge & Stock App</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+    header {
+      padding: 12px 16px;
+      background: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1f2937;
+    }
+    header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+      color: #e5e7eb;
+    }
+    header span {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    .role-select {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .role-select select {
+      padding: 4px 8px;
+      background: #111827;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .layout {
+      display: flex;
+      height: calc(100vh - 50px);
+    }
+    nav {
+      width: 220px;
+      background: #111827;
+      border-right: 1px solid #1f2937;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    nav h2 {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin: 8px 4px;
+    }
+    .nav-btn {
+      width: 100%;
+      padding: 6px 8px;
+      margin: 2px 0;
+      text-align: left;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #d1d5db;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .nav-btn.active {
+      background: #1f2937;
+      border-color: #4b5563;
+      color: #38bdf8;
+    }
+    .nav-btn:hover {
+      background: #111827;
+      border-color: #374151;
+    }
+    main {
+      flex: 1;
+      padding: 10px 14px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .panel {
+      display: none;
+    }
+    .panel.active {
+      display: block;
+    }
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+    .sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+    }
+    .form-row label {
+      font-size: 11px;
+      color: #9ca3af;
+      min-width: 80px;
+    }
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+      padding: 4px 6px;
+      font-size: 12px;
+      background: #020817;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+      border-radius: 4px;
+      flex: 1;
+      min-width: 0;
+    }
+    .btn {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: 1px solid #38bdf8;
+      background: #0f172a;
+      color: #38bdf8;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn:hover {
+      background: #111827;
+    }
+    .btn.secondary {
+      border-color: #4b5563;
+      color: #9ca3af;
+    }
+    .tag {
+      display: inline-block;
+      padding: 1px 6px;
+      font-size: 9px;
+      border-radius: 999px;
+      background: #111827;
+      color: #9ca3af;
+      margin-left: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 11px;
+    }
+    th, td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #111827;
+      text-align: left;
+      white-space: nowrap;
+    }
+    th {
+      background: #020817;
+      color: #9ca3af;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tr:nth-child(even) td {
+      background: #020817;
+    }
+    .stock-low {
+      color: #f97316;
+      font-weight: 600;
+    }
+    .stock-zero {
+      color: #f97316;
+      font-weight: 700;
+    }
+    .pill {
+      padding: 0 6px;
+      border-radius: 8px;
+      font-size: 9px;
+      background: #111827;
+      color: #9ca3af;
+      display: inline-block;
+    }
+    .status-bar {
+      font-size: 10px;
+      padding: 2px 8px;
+      background: #111827;
+      border-top: 1px solid #1f2937;
+      color: #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+    }
+    .status-bar span.alert {
+      color: #f97316;
+    }
+    .status-bar span.ok {
+      color: #22c55e;
+    }
+    .status-bar button {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid #4b5563;
+      background: #020817;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+    .inline {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Supply Charge & Stock</h1>
+    <span>Central → Ward → Patient, with audit trail (no freestyle stocks).</span>
+  </div>
+  <div class="role-select">
+    <span>Role / Location:</span>
+    <select id="roleSelect"></select>
+    <span id="currentRoleLabel"></span>
+  </div>
+</header>
 
+<div class="layout">
+  <nav id="navCentral" style="display:none;">
+    <h2>Central Flow</h2>
+    <button class="nav-btn" data-panel="panelCentralItems">1 ▸ Item Master</button>
+    <button class="nav-btn" data-panel="panelCentralReceive">2 ▸ Receive Stock</button>
+    <button class="nav-btn" data-panel="panelCentralTransfer">3 ▸ Transfer to Wards</button>
+    <button class="nav-btn" data-panel="panelCentralAdjust">Adjustments</button>
+    <button class="nav-btn" data-panel="panelGlobalStock">Global Stock & Exceptions</button>
+  </nav>
+
+  <nav id="navWard" style="display:none;">
+    <h2>Ward Tools</h2>
+    <button class="nav-btn" data-panel="panelWardCharge">Charge to Patient</button>
+    <button class="nav-btn" data-panel="panelWardStock">My Ward Stock</button>
+  </nav>
+
+  <main>
+    <!-- CENTRAL: ITEM MASTER -->
+    <section id="panelCentralItems" class="panel">
+      <h3>Item Master <span class="tag">Central only</span></h3>
+      <div class="sub">Register or update supplies. Fixed price per piece. Wards can only use items defined here.</div>
+      <div class="form-row">
+        <label>Item Code</label>
+        <input id="itemCode" placeholder="e.g. SYR-001">
+      </div>
+      <div class="form-row">
+        <label>Item Name</label>
+        <input id="itemName" placeholder="e.g. Syringe 3mL">
+      </div>
+      <div class="form-row">
+        <label>Unit Price</label>
+        <input id="itemPrice" type="number" min="0" step="0.01" placeholder="e.g. 12.5">
+      </div>
+      <div class="form-row">
+        <label>Category</label>
+        <input id="itemCategory" placeholder="(optional)">
+      </div>
+      <div class="form-row">
+        <label>Remarks</label>
+        <input id="itemRemarks" placeholder="(optional)">
+      </div>
+      <button class="btn" onclick="saveItem()">Save / Update Item</button>
+      <div id="itemFeedback" class="sub"></div>
+    </section>
+
+    <!-- CENTRAL: RECEIVE -->
+    <section id="panelCentralReceive" class="panel">
+      <h3>Receive Stock <span class="tag">Into CENTRAL</span></h3>
+      <div class="sub">Log deliveries. Balances auto-computed from transactions.</div>
+      <div class="form-row">
+        <label>Item</label>
+        <input id="receiveItemSearch" placeholder="Type to search item..." oninput="filterItemList(this.value, 'receiveItemList')">
+      </div>
+      <div class="form-row">
+        <label></label>
+        <select id="receiveItemList"></select>
+      </div>
+      <div class="form-row">
+        <label>Quantity (pcs)</label>
+        <input id="receiveQty" type="number" min="1">
+      </div>
+      <div class="form-row">
+        <label>Ref No.</label>
+        <input id="receiveRef" placeholder="Optional; auto if blank">
+      </div>
+      <div class="form-row">
+        <label>Supplier</label>
+        <input id="receiveSupplier" placeholder="Optional">
+      </div>
+      <div class="form-row">
+        <label>Remarks</label>
+        <input id="receiveRemarks" placeholder="Optional">
+      </div>
+      <div class="form-row">
+        <label>Clerk</label>
+        <input id="receiveClerk" placeholder="Name">
+      </div>
+      <button class="btn" onclick="receiveStock()">Save Receipt</button>
+      <div id="receiveFeedback" class="sub"></div>
+    </section>
+
+    <!-- CENTRAL: TRANSFER -->
+    <section id="panelCentralTransfer" class="panel">
+      <h3>Transfer to Ward <span class="tag">Central → Ward</span></h3>
+      <div class="sub">One reference number per batch. System checks CENTRAL stock before confirming.</div>
+      <div class="form-row">
+        <label>Ward</label>
+        <select id="transferWard"></select>
+      </div>
+      <div class="form-row">
+        <label>Ref No.</label>
+        <input id="transferRef" placeholder="Optional; auto if blank">
+      </div>
+      <div id="transferItemsContainer"></div>
+      <button class="btn" onclick="addTransferRow()">+ Add Item</button>
+      <div class="form-row">
+        <label>Remarks</label>
+        <input id="transferRemarks" placeholder="Optional">
+      </div>
+      <div class="form-row">
+        <label>Clerk</label>
+        <input id="transferClerk" placeholder="Name">
+      </div>
+      <button class="btn" onclick="submitTransfer()">Submit Transfer</button>
+      <div id="transferFeedback" class="sub"></div>
+    </section>
+
+    <!-- CENTRAL: ADJUSTMENTS -->
+    <section id="panelCentralAdjust" class="panel">
+      <h3>Stock Adjustments <span class="tag">Central controlled</span></h3>
+      <div class="sub">For discrepancies, expiry, damage. Cannot go below zero.</div>
+      <div class="form-row">
+        <label>Location</label>
+        <select id="adjustLocation">
+          <option value="CENTRAL">CENTRAL</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Item</label>
+        <input id="adjustItemSearch" placeholder="Type to search item..." oninput="filterItemList(this.value, 'adjustItemList')">
+      </div>
+      <div class="form-row">
+        <label></label>
+        <select id="adjustItemList"></select>
+      </div>
+      <div class="form-row">
+        <label>Qty (+/-)</label>
+        <input id="adjustQty" type="number" step="1">
+      </div>
+      <div class="form-row">
+        <label>Reason</label>
+        <input id="adjustReason" placeholder="e.g. Expired, breakage, correction">
+      </div>
+      <div class="form-row">
+        <label>Clerk</label>
+        <input id="adjustClerk" placeholder="Name">
+      </div>
+      <button class="btn" onclick="submitAdjustment()">Submit Adjustment</button>
+      <div id="adjustFeedback" class="sub"></div>
+    </section>
+
+    <!-- GLOBAL STOCK & EXCEPTIONS -->
+    <section id="panelGlobalStock" class="panel">
+      <h3>Global Stock & Exceptions</h3>
+      <div class="sub">Read-only view of CENTRAL + wards. Negative stock = red flag. Fix via receipts/transfers/adjustments.</div>
+      <div id="globalStockTable"></div>
+      <div id="anomaliesList" class="sub"></div>
+    </section>
+
+    <!-- WARD: CHARGE -->
+    <section id="panelWardCharge" class="panel">
+      <h3>Charge to Patient</h3>
+      <div class="sub">Ward stock only. Blocks if patient discharged or stock insufficient.</div>
+      <div class="form-row">
+        <label>Clerk</label>
+        <input id="chargeClerk" placeholder="Your name">
+      </div>
+      <div class="form-row">
+        <label>Patient (Existing)</label>
+        <input id="patientSearch" placeholder="Type to search..." oninput="filterPatientList(this.value)">
+      </div>
+      <div class="form-row">
+        <label></label>
+        <select id="patientList"></select>
+      </div>
+      <div class="form-row">
+        <label>Or New Patient ID</label>
+        <input id="newPatientID" placeholder="Hospital No.">
+      </div>
+      <div class="form-row">
+        <label>New Patient Name</label>
+        <input id="newPatientName" placeholder="Lastname, Firstname">
+      </div>
+      <div class="form-row">
+        <label>Item</label>
+        <input id="chargeItemSearch" placeholder="Type to search item..." oninput="filterWardItemList(this.value)">
+      </div>
+      <div class="form-row">
+        <label></label>
+        <select id="chargeItemList"></select>
+      </div>
+      <div class="form-row">
+        <label>Qty (pcs)</label>
+        <input id="chargeQty" type="number" min="1">
+      </div>
+      <div class="form-row">
+        <label>Computed Total</label>
+        <input id="chargeTotal" readonly>
+      </div>
+      <button class="btn" onclick="submitCharge()">Post Charge</button>
+      <button class="btn secondary" onclick="dischargeSelectedPatient()">Mark Discharged</button>
+      <div id="chargeFeedback" class="sub"></div>
+    </section>
+
+    <!-- WARD: STOCK -->
+    <section id="panelWardStock" class="panel">
+      <h3>My Ward Stock</h3>
+      <div class="sub">Live balances for your ward based on transfers and charges.</div>
+      <div id="wardStockTable"></div>
+    </section>
+  </main>
+</div>
+
+<div class="status-bar">
+  <div class="inline">
+    <span id="statusOnline" class="ok">Online</span>
+    <span id="statusRole"></span>
+  </div>
+  <div class="inline">
+    <span id="cacheStatus"></span>
+    <button onclick="retryCached()">Retry unsent</button>
+  </div>
+</div>
+
+<script>
+  let appState = {
+    role: null,
+    wards: [],
+    items: [],
+    patients: [],
+    balances: {},
+    anomalies: [],
+    wardPatientsFiltered: [],
+    wardItemsFiltered: []
+  };
+
+  const CACHE_KEY = 'supplyApp_cachedTx';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initRoleSelect();
+    window.addEventListener('online', () => setOnlineStatus(true));
+    window.addEventListener('offline', () => setOnlineStatus(false));
+    setOnlineStatus(navigator.onLine);
+    updateCacheStatus();
+  });
+
+  function initRoleSelect() {
+    const sel = document.getElementById('roleSelect');
+    sel.innerHTML = '';
+    // CENTRAL + wards from backend later; for now static until loaded
+    const baseOptions = ['CENTRAL'].concat([]);
+    baseOptions.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r;
+      opt.textContent = r;
+      sel.appendChild(opt);
+    });
+    // We load real wards from server after first CENTRAL load
+    sel.addEventListener('change', () => {
+      const val = sel.value;
+      if (!val) return;
+      loadInitial(val === 'CENTRAL' ? 'CENTRAL' : val);
+    });
+    // Initial default
+    sel.value = 'CENTRAL';
+    loadInitial('CENTRAL');
+  }
+
+  function loadInitial(role) {
+    setStatusRole('Loading...');
+    google.script.run
+      .withSuccessHandler(data => {
+        appState.role = role;
+        appState.wards = data.wards || [];
+        appState.items = data.items || [];
+        appState.patients = data.patients || [];
+        appState.balances = data.balances || {};
+        appState.anomalies = data.anomalies || [];
+
+        // Rebuild role select with wards
+        const sel = document.getElementById('roleSelect');
+        sel.innerHTML = '';
+        const optC = document.createElement('option');
+        optC.value = 'CENTRAL';
+        optC.textContent = 'CENTRAL';
+        sel.appendChild(optC);
+        (appState.wards || []).forEach(w => {
+          const o = document.createElement('option');
+          o.value = w;
+          o.textContent = w;
+          sel.appendChild(o);
+        });
+        sel.value = role;
+
+        document.getElementById('currentRoleLabel').textContent = role;
+        setStatusRole(role);
+
+        setupRoleUI(role);
+        populateItemSelects();
+        populateTransferWard();
+        renderGlobalStock();
+        renderWardStock();
+        renderAnomalies();
+        populatePatientsForWard();
+      })
+      .withFailureHandler(err => {
+        setStatusRole('Error loading');
+        cacheStatusError(err);
+      })
+      .getInitialData(role);
+  }
+
+  function setupRoleUI(role) {
+    const navC = document.getElementById('navCentral');
+    const navW = document.getElementById('navWard');
+    navC.style.display = role === 'CENTRAL' ? 'block' : 'none';
+    navW.style.display = role !== 'CENTRAL' ? 'block' : 'none';
+
+    // Hide all panels
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    if (role === 'CENTRAL') {
+      activatePanel('panelCentralItems', 'navCentral');
+    } else {
+      activatePanel('panelWardCharge', 'navWard');
+    }
+
+    // Bind nav buttons
+    document.querySelectorAll('nav .nav-btn').forEach(btn => {
+      btn.onclick = () => {
+        const panel = btn.dataset.panel;
+        activatePanel(panel, btn.closest('nav').id);
+      };
+    });
+  }
+
+  function activatePanel(panelId, navId) {
+    document.querySelectorAll('.panel').forEach(p => {
+      p.classList.toggle('active', p.id === panelId);
+    });
+    if (navId) {
+      document.querySelectorAll('#' + navId + ' .nav-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.panel === panelId);
+      });
+    }
+    if (panelId === 'panelGlobalStock') {
+      renderGlobalStock();
+      renderAnomalies();
+    }
+    if (panelId === 'panelWardStock') {
+      renderWardStock();
+    }
+  }
+
+  /************ STATUS & CACHE ************/
+  function setOnlineStatus(isOnline) {
+    const el = document.getElementById('statusOnline');
+    if (!el) return;
+    if (isOnline) {
+      el.textContent = 'Online';
+      el.className = 'ok';
+    } else {
+      el.textContent = 'Offline - using local cache';
+      el.className = 'alert';
+    }
+  }
+
+  function setStatusRole(text) {
+    const el = document.getElementById('statusRole');
+    if (el) el.textContent = text ? `| ${text}` : '';
+  }
+
+  function getCachedTx() {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return [];
+      return JSON.parse(raw) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function setCachedTx(list) {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(list || []));
+    updateCacheStatus();
+  }
+
+  function addCachedTx(fn, args) {
+    const list = getCachedTx();
+    list.push({ fn, args });
+    setCachedTx(list);
+  }
+
+  function updateCacheStatus() {
+    const el = document.getElementById('cacheStatus');
+    if (!el) return;
+    const list = getCachedTx();
+    if (!list.length) {
+      el.textContent = 'No unsent transactions.';
+    } else {
+      el.textContent = `${list.length} unsent transaction(s) cached.`;
+    }
+  }
+
+  function retryCached() {
+    const payloads = getCachedTx();
+    if (!payloads.length) return;
+    google.script.run
+      .withSuccessHandler(res => {
+        setCachedTx([]);
+      })
+      .withFailureHandler(err => {
+        cacheStatusError(err);
+      })
+      .applyCachedTransactions(payloads);
+  }
+
+  function cacheStatusError(err) {
+    const el = document.getElementById('cacheStatus');
+    if (el) el.textContent = 'Error: ' + (err && err.message ? err.message : err);
+  }
+
+  /************ ITEMS & SEARCH ************/
+  function populateItemSelects() {
+    const lists = [
+      'receiveItemList',
+      'adjustItemList'
+    ];
+    lists.forEach(id => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      sel.innerHTML = '';
+      appState.items.forEach(it => {
+        const o = document.createElement('option');
+        o.value = it.code;
+        o.textContent = `${it.code} — ${it.name} (₱${it.price})`;
+        sel.appendChild(o);
+      });
+    });
+    // Transfer rows & charge list are dynamic
+    if (!document.getElementById('transferItemsContainer').children.length) {
+      addTransferRow();
+    }
+  }
+
+  function filterItemList(query, targetId) {
+    const sel = document.getElementById(targetId);
+    if (!sel) return;
+    const q = (query || '').toLowerCase();
+    sel.innerHTML = '';
+    appState.items
+      .filter(it =>
+        it.code.toLowerCase().includes(q) ||
+        it.name.toLowerCase().includes(q))
+      .forEach(it => {
+        const o = document.createElement('option');
+        o.value = it.code;
+        o.textContent = `${it.code} — ${it.name} (₱${it.price})`;
+        sel.appendChild(o);
+      });
+  }
+
+  function filterWardItemList(query) {
+    const sel = document.getElementById('chargeItemList');
+    if (!sel) return;
+    const q = (query || '').toLowerCase();
+    sel.innerHTML = '';
+    const ward = appState.role;
+    const wardStock = (appState.balances && appState.balances[ward]) || {};
+    appState.items
+      .filter(it =>
+        (wardStock[it.code] || 0) > 0 &&
+        (it.code.toLowerCase().includes(q) || it.name.toLowerCase().includes(q)))
+      .forEach(it => {
+        const bal = wardStock[it.code] || 0;
+        const o = document.createElement('option');
+        o.value = it.code;
+        o.textContent = `${it.code} — ${it.name} | Bal: ${bal}`;
+        sel.appendChild(o);
+      });
+  }
+
+  /************ CENTRAL: SAVE ITEM ************/
+  function saveItem() {
+    const code = document.getElementById('itemCode').value.trim();
+    const name = document.getElementById('itemName').value.trim();
+    const price = parseFloat(document.getElementById('itemPrice').value);
+    const category = document.getElementById('itemCategory').value.trim();
+    const remarks = document.getElementById('itemRemarks').value.trim();
+    const fb = document.getElementById('itemFeedback');
+
+    fb.textContent = '';
+
+    if (!code || !name || !price || price <= 0) {
+      fb.textContent = 'Complete code, name, and valid price.';
+      return;
+    }
+
+    const payload = { code, name, price, category, remarks };
+
+    google.script.run
+      .withSuccessHandler(res => {
+        fb.textContent = `Item ${res === 'CREATED' ? 'created' : 'updated'} successfully.`;
+        loadInitial(appState.role || 'CENTRAL');
+      })
+      .withFailureHandler(err => {
+        fb.textContent = 'Error: ' + (err.message || err);
+      })
+      .registerItem(payload);
+  }
+
+  /************ CENTRAL: RECEIVE ************/
+  function receiveStock() {
+    const itemCode = document.getElementById('receiveItemList').value;
+    const qty = parseInt(document.getElementById('receiveQty').value, 10);
+    const refNo = document.getElementById('receiveRef').value.trim();
+    const supplier = document.getElementById('receiveSupplier').value.trim();
+    const remarks = document.getElementById('receiveRemarks').value.trim();
+    const clerk = document.getElementById('receiveClerk').value.trim();
+    const fb = document.getElementById('receiveFeedback');
+
+    fb.textContent = '';
+
+    if (!itemCode || !qty || qty <= 0 || !clerk) {
+      fb.textContent = 'Item, qty, and clerk are required.';
+      return;
+    }
+
+    const payload = { itemCode, qty, clerk, refNo, supplier, remarks };
+
+    const call = google.script.run
+      .withSuccessHandler(res => {
+        fb.textContent = `Saved. RefNo: ${res.refNo}`;
+        loadInitial(appState.role || 'CENTRAL');
+      })
+      .withFailureHandler(err => {
+        fb.textContent = 'Error (cached locally): ' + (err.message || err);
+        addCachedTx('receiveStock', payload);
+      });
+
+    call.receiveStock(payload);
+  }
+
+  /************ CENTRAL: TRANSFER ************/
+  function populateTransferWard() {
+    const sel = document.getElementById('transferWard');
+    if (!sel) return;
+    sel.innerHTML = '';
+    (appState.wards || []).forEach(w => {
+      const o = document.createElement('option');
+      o.value = w;
+      o.textContent = w;
+      sel.appendChild(o);
+    });
+  }
+
+  function addTransferRow() {
+    const wrap = document.getElementById('transferItemsContainer');
+    const row = document.createElement('div');
+    row.className = 'form-row';
+    row.innerHTML = `
+      <label>Item & Qty</label>
+      <select class="transferItem"></select>
+      <input class="transferQty" type="number" min="1" placeholder="Qty">
+      <button type="button" class="btn secondary" onclick="this.parentNode.remove()">✕</button>
+    `;
+    wrap.appendChild(row);
+
+    const sel = row.querySelector('.transferItem');
+    appState.items.forEach(it => {
+      const o = document.createElement('option');
+      o.value = it.code;
+      const centralBal = (appState.balances[LOCATION_CENTRAL] || {})[it.code] || 0;
+      o.textContent = `${it.code} — ${it.name} | CENTRAL: ${centralBal}`;
+      sel.appendChild(o);
+    });
+  }
+
+  function submitTransfer() {
+    const ward = document.getElementById('transferWard').value;
+    const refNo = document.getElementById('transferRef').value.trim();
+    const remarks = document.getElementById('transferRemarks').value.trim();
+    const clerk = document.getElementById('transferClerk').value.trim();
+    const fb = document.getElementById('transferFeedback');
+
+    fb.textContent = '';
+
+    if (!ward || !clerk) {
+      fb.textContent = 'Ward and clerk are required.';
+      return;
+    }
+
+    const rows = [];
+    document.querySelectorAll('#transferItemsContainer .form-row').forEach(r => {
+      const code = r.querySelector('.transferItem').value;
+      const qty = parseInt(r.querySelector('.transferQty').value, 10);
+      if (code && qty && qty > 0) {
+        rows.push({ itemCode: code, qty: qty });
+      }
+    });
+
+    if (!rows.length) {
+      fb.textContent = 'Add at least one item with valid qty.';
+      return;
+    }
+
+    const payload = { ward, items: rows, clerk, refNo, remarks };
+
+    google.script.run
+      .withSuccessHandler(res => {
+        fb.textContent = `Transfer saved. RefNo: ${res.refNo}`;
+        loadInitial(appState.role || 'CENTRAL');
+      })
+      .withFailureHandler(err => {
+        fb.textContent = 'Error (cached locally): ' + (err.message || err);
+        addCachedTx('transferToWard', payload);
+      })
+      .transferToWard(payload);
+  }
+
+  /************ CENTRAL: ADJUST ************/
+  function submitAdjustment() {
+    const location = document.getElementById('adjustLocation').value || 'CENTRAL';
+    const itemCode = document.getElementById('adjustItemList').value;
+    const qty = parseInt(document.getElementById('adjustQty').value, 10);
+    const reason = document.getElementById('adjustReason').value.trim();
+    const clerk = document.getElementById('adjustClerk').value.trim();
+    const fb = document.getElementById('adjustFeedback');
+
+    fb.textContent = '';
+
+    if (!itemCode || !qty || qty === 0 || !clerk) {
+      fb.textContent = 'Item, non-zero qty, and clerk are required.';
+      return;
+    }
+
+    const payload = { location, itemCode, qty, reason, clerk };
+
+    google.script.run
+      .withSuccessHandler(res => {
+        fb.textContent = 'Adjustment saved.';
+        loadInitial(appState.role || 'CENTRAL');
+      })
+      .withFailureHandler(err => {
+        fb.textContent = 'Error (cached locally): ' + (err.message || err);
+        addCachedTx('adjustStock', payload);
+      })
+      .adjustStock(payload);
+  }
+
+  /************ GLOBAL STOCK ************/
+  function renderGlobalStock() {
+    const wrap = document.getElementById('globalStockTable');
+    if (!wrap) return;
+    const balances = appState.balances || {};
+    const items = appState.items || [];
+
+    // Build map of item -> per location
+    const locations = [LOCATION_CENTRAL].concat(appState.wards || []);
+    let html = '<table><thead><tr><th>Item</th>';
+    locations.forEach(loc => { html += `<th>${loc}</th>`; });
+    html += '<th>Total</th></tr></thead><tbody>';
+
+    items.forEach(it => {
+      let rowTotal = 0;
+      html += `<tr><td>${it.code} — ${it.name}</td>`;
+      locations.forEach(loc => {
+        const bal = (balances[loc] && balances[loc][it.code]) || 0;
+        rowTotal += bal;
+        let cls = '';
+        if (bal === 0) cls = 'stock-zero';
+        else if (bal > 0 && bal <= 5) cls = 'stock-low';
+        html += `<td class="${cls}">${bal}</td>`;
+      });
+      html += `<td>${rowTotal}</td></tr>`;
+    });
+
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+  }
+
+  function renderAnomalies() {
+    const el = document.getElementById('anomaliesList');
+    if (!el) return;
+    const anomalies = appState.anomalies || [];
+    if (!anomalies.length) {
+      el.textContent = 'No structural anomalies detected (negative stock etc.).';
+      return;
+    }
+    el.innerHTML = '<strong>Exceptions:</strong> ' + anomalies.map(a =>
+      `[${a.type}] ${a.location} / ${a.itemCode} = ${a.balance}`).join(' | ');
+  }
+
+  /************ WARD: PATIENTS ************/
+  function populatePatientsForWard() {
+    const sel = document.getElementById('patientList');
+    if (!sel) return;
+    sel.innerHTML = '';
+    const ward = appState.role;
+    (appState.patients || [])
+      .filter(p => p.ward === ward || !p.ward) // loose filter; adjust if you want strict ward binding
+      .forEach(p => {
+        const o = document.createElement('option');
+        o.value = p.id;
+        o.textContent = `${p.id} — ${p.name}`;
+        sel.appendChild(o);
+      });
+  }
+
+  function filterPatientList(q) {
+    const sel = document.getElementById('patientList');
+    if (!sel) return;
+    const ward = appState.role;
+    const query = (q || '').toLowerCase();
+    sel.innerHTML = '';
+    (appState.patients || [])
+      .filter(p => (p.ward === ward || !p.ward))
+      .filter(p =>
+        p.id.toLowerCase().includes(query) ||
+        p.name.toLowerCase().includes(query))
+      .forEach(p => {
+        const o = document.createElement('option');
+        o.value = p.id;
+        o.textContent = `${p.id} — ${p.name}`;
+        sel.appendChild(o);
+      });
+  }
+
+  /************ WARD: STOCK ************/
+  function renderWardStock() {
+    const wrap = document.getElementById('wardStockTable');
+    if (!wrap || appState.role === 'CENTRAL') return;
+    const ward = appState.role;
+    const wardBal = (appState.balances && appState.balances[ward]) || {};
+    const items = appState.items || [];
+
+    let html = '<table><thead><tr><th>Item</th><th>Balance</th></tr></thead><tbody>';
+    items.forEach(it => {
+      const bal = wardBal[it.code] || 0;
+      if (bal === 0) return;
+      html += `<tr><td>${it.code} — ${it.name}</td><td>${bal}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+  }
+
+  /************ WARD: CHARGE ************/
+  // Auto compute total when item or qty changes
+  document.addEventListener('input', e => {
+    if (e.target.id === 'chargeQty' || e.target.id === 'chargeItemList') {
+      updateChargeTotal();
+    }
+  });
+
+  function updateChargeTotal() {
+    const code = document.getElementById('chargeItemList').value;
+    const qty = parseInt(document.getElementById('chargeQty').value, 10) || 0;
+    const totalEl = document.getElementById('chargeTotal');
+    const item = appState.items.find(i => i.code === code);
+    const total = item ? (item.price * qty) : 0;
+    totalEl.value = total ? `₱${total.toFixed(2)}` : '';
+  }
+
+  function submitCharge() {
+    const ward = appState.role;
+    const clerk = document.getElementById('chargeClerk').value.trim();
+    const existingPatientID = document.getElementById('patientList').value;
+    const newPatientID = document.getElementById('newPatientID').value.trim();
+    const newPatientName = document.getElementById('newPatientName').value.trim();
+    const itemCode = document.getElementById('chargeItemList').value;
+    const qty = parseInt(document.getElementById('chargeQty').value, 10);
+    const fb = document.getElementById('chargeFeedback');
+
+    fb.textContent = '';
+
+    if (!ward || ward === 'CENTRAL') {
+      fb.textContent = 'Switch to a ward role to charge.';
+      return;
+    }
+    if (!clerk) {
+      fb.textContent = 'Clerk name required.';
+      return;
+    }
+    if (!itemCode || !qty || qty <= 0) {
+      fb.textContent = 'Item and valid qty required.';
+      return;
+    }
+
+    let patientID = existingPatientID;
+    let patientName = '';
+    if (!patientID && newPatientID && newPatientName) {
+      patientID = newPatientID;
+      patientName = newPatientName;
+    } else if (patientID) {
+      const p = (appState.patients || []).find(x => x.id === patientID);
+      patientName = p ? p.name : '';
+    }
+
+    if (!patientID || !patientName) {
+      fb.textContent = 'Select existing patient or enter new ID + name.';
+      return;
+    }
+
+    const payload = {
+      ward,
+      clerk,
+      patientID,
+      patientName,
+      itemCode,
+      qty
+    };
+
+    google.script.run
+      .withSuccessHandler(res => {
+        fb.textContent = 'Charge posted.';
+        loadInitial(appState.role);
+      })
+      .withFailureHandler(err => {
+        fb.textContent = 'Error (cached locally): ' + (err.message || err);
+        addCachedTx('chargeToPatient', payload);
+      })
+      .chargeToPatient(payload);
+  }
+
+  function dischargeSelectedPatient() {
+    const fb = document.getElementById('chargeFeedback');
+    const pid = document.getElementById('patientList').value ||
+      document.getElementById('newPatientID').value.trim();
+    const clerk = document.getElementById('chargeClerk').value.trim();
+
+    if (!pid) {
+      fb.textContent = 'Select or enter patient ID to discharge.';
+      return;
+    }
+
+    const payload = { patientID: pid, clerk };
+
+    google.script.run
+      .withSuccessHandler(res => {
+        fb.textContent = 'Patient marked discharged.';
+        loadInitial(appState.role);
+      })
+      .withFailureHandler(err => {
+        fb.textContent = 'Error (cached locally): ' + (err.message || err);
+        addCachedTx('dischargePatient', payload);
+      })
+      .dischargePatient(pid, clerk);
+  }
+</script>
+</body>
+</html>
